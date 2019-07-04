@@ -77,7 +77,10 @@ bind_rows(mutate(tidy_bronte, author = "Brontë Sisters"),
   gather(author, proportion, `Brontë Sisters`:`H.G. Wells`) -> frequency
 
 # Plot frequencies
-# expect a warning about rows with missing values being removed
+# words on the diagonal line have similar frequencies in both authors
+# words above the diagonal are more used by the author on the y axis
+# words below the diagonal are more used by the author on the x axis
+
 ggplot(frequency, aes(x = proportion, y = `Jane Austen`, color = abs(`Jane Austen` - proportion))) +
   geom_abline(color = "gray40", lty = 2) +
   geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3) +
@@ -89,3 +92,9 @@ ggplot(frequency, aes(x = proportion, y = `Jane Austen`, color = abs(`Jane Auste
   theme(legend.position="none") +
   labs(y = "Jane Austen", x = NULL)
 
+# word frequency correlation
+cor.test(data = frequency[frequency$author == "Brontë Sisters",],
+         ~ proportion + `Jane Austen`)
+
+cor.test(data = frequency[frequency$author == "H.G. Wells",], 
+         ~ proportion + `Jane Austen`)
